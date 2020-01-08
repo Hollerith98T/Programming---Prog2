@@ -1,0 +1,226 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+using namespace std;
+
+template <class T> class Nodo{
+	
+	private:
+		T key;
+		Nodo <T> *next;
+	
+	public:
+		Nodo(T key, Nodo <T> *next){
+			
+			this->key = key;
+			this->next = next;
+		}	
+		
+		void setKey(T key){
+			
+			this->key = key;
+		}	
+	
+		void setNext(Nodo <T> *next){
+			
+			this->next = next;
+			
+		}
+		
+		T getKey(){
+			
+			return key;
+		}
+		
+		Nodo <T> *getNext(){
+			
+			return next;
+		}
+	
+};
+
+template <class T> class Stack{
+
+	private:
+		int N;
+		Nodo <T> *cima, *fondo, *current;
+	public:
+		Stack(){
+			
+			N = 0;
+			cima = fondo = current = NULL;	
+		}
+
+		void push(T key){
+			
+			Nodo <T> *newnodo = new Nodo <T>(key, NULL);
+			
+			if (!cima){
+				
+				cima = fondo = newnodo;
+			}
+			
+			else{
+				
+				newnodo->setNext(cima);
+				cima = newnodo;
+			}
+			
+			N++;
+			
+		} 
+
+		void pop(){
+			
+			if (!fondo){
+				cerr << "Pila Vuota!";
+			}
+			else{
+			
+				cima = cima->getNext();	
+				N--;
+			}
+			
+			
+				
+		}
+		
+		T stampa(){
+			
+			if (!current){
+				
+				current = cima;
+			}
+			else{
+				
+				current = current->getNext();
+			}
+			
+			return current->getKey();
+		}
+		
+			int getN(){
+				
+				return N;
+			}
+
+};
+
+
+int main(){
+	
+	fstream infile, outfile;
+	infile.open("input.txt", ios::in);
+	outfile.open("output.txt", ios::out);
+
+	for (int q = 0; q < 100; q++){
+		
+		string s;
+		int N;
+		infile >> s >> N;
+		
+		
+		if (s == "int"){
+				
+				Stack <int> stack;
+				
+			for (int i = 0; i < N; i++){
+				
+				string meme;
+				infile >> meme;
+				if (meme.substr(0, 1) == "i"){
+					stringstream ss;
+					ss << meme.substr(1);
+					int val;
+					ss >> val;
+					stack.push(val);
+				}
+				else{
+					stack.pop();
+				}	
+				
+			}
+			for (int i = 0; i < stack.getN(); i++){
+				outfile << stack.stampa() << " ";
+			}
+		}
+		
+		if (s == "double"){
+				
+				Stack <double> stack;
+				
+			for (int i = 0; i < N; i++){
+				
+				string meme;
+				infile >> meme;
+				if (meme.substr(0, 1) == "i"){
+					stringstream ss;
+					ss << meme.substr(1);
+					double val;
+					ss >> val;
+					stack.push(val);
+				}
+				else{
+					stack.pop();
+				}	
+				
+			}
+			for (int i = 0; i < stack.getN(); i++){
+				outfile << stack.stampa() << " ";
+			}
+		}
+		
+		if (s == "bool"){
+				
+				Stack <bool> stack;
+				
+			for (int i = 0; i < N; i++){
+				
+				string meme;
+				infile >> meme;
+				if (meme.substr(0, 1) == "i"){
+					stringstream ss;
+					ss << meme.substr(1);
+					bool val;
+					ss >> val;
+					stack.push(val);
+				}
+				else{
+					stack.pop();
+				}	
+				
+			}
+			for (int i = 0; i < stack.getN(); i++){
+				outfile << stack.stampa() << " ";
+			}
+		}
+		if (s == "char"){
+				
+				Stack <char> stack;
+				
+			for (int i = 0; i < N; i++){
+				
+				string meme;
+				infile >> meme;
+				if (meme.substr(0, 1) == "i"){
+					stringstream ss;
+					ss << meme.substr(1);
+					char val;
+					ss >> val;
+					stack.push(val);
+				}
+				else{
+					stack.pop();
+				}	
+				
+			}
+			for (int i = 0; i < stack.getN(); i++){
+				outfile << stack.stampa() << " ";
+			}
+		}
+		outfile << endl;
+	}
+	
+
+return 0;	
+}
