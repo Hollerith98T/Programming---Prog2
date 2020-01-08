@@ -1,109 +1,64 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
+
 using namespace std;
 
-template <class T> class Nodo{
-	
+template <class T> class Node{
 	private:
 		T key;
-		Nodo <T> *next;
-	
+		Node <T> *next;
 	public:
-		Nodo(T key, Nodo <T> *next){
-			
-			this->key = key;
-			this->next = next;
-		}	
-		
-		void setKey(T key){
-			
-			this->key = key;
-		}	
-	
-		void setNext(Nodo <T> *next){
-			
-			this->next = next;
-			
+		Node(T key){
+			this->key=key;
+			next = NULL;
 		}
-		
+		void setKey(T key){
+			this->key=key;
+		}
+		void setNext(Node <T> *next){
+			this->next=next;
+		}
 		T getKey(){
-			
 			return key;
 		}
-		
-		Nodo <T> *getNext(){
-			
+		Node <T> *getNext(){
 			return next;
 		}
-	
 };
 
 template <class T> class Stack{
-
 	private:
+		Node <T> *cima;
 		int N;
-		Nodo <T> *cima, *fondo, *current;
 	public:
 		Stack(){
-			
 			N = 0;
-			cima = fondo = current = NULL;	
+			cima = NULL;
 		}
-
+		
 		void push(T key){
-			
-			Nodo <T> *newnodo = new Nodo <T>(key, NULL);
-			
+			Node <T> *newnode = new Node <T>(key);
 			if (!cima){
-				
-				cima = fondo = newnodo;
+				cima = newnode;
 			}
-			
 			else{
-				
-				newnodo->setNext(cima);
-				cima = newnodo;
+				newnode->setNext(cima);
+				cima = newnode;
 			}
-			
 			N++;
-			
-		} 
-
+		}
+		
 		void pop(){
-			
-			if (!fondo){
-				cerr << "Pila Vuota!";
-			}
-			else{
-			
-				cima = cima->getNext();	
-				N--;
-			}
-			
-			
-				
+			cima = cima->getNext();
+			N--;
 		}
-		
-		T stampa(){
-			
-			if (!current){
-				
-				current = cima;
-			}
-			else{
-				
-				current = current->getNext();
-			}
-			
-			return current->getKey();
-		}
-		
-			int getN(){
-				
-				return N;
-			}
 
+		void stampa(ostream &os){
+			for (int i=0; i<N; i++){
+				os << cima->getKey() << " ";
+				cima = cima->getNext();
+			}
+		}
 };
 
 
@@ -112,115 +67,47 @@ int main(){
 	fstream infile, outfile;
 	infile.open("input.txt", ios::in);
 	outfile.open("output.txt", ios::out);
-
-	for (int q = 0; q < 100; q++){
-		
-		string s;
-		int N;
-		infile >> s >> N;
-		
-		
-		if (s == "int"){
-				
-				Stack <int> stack;
-				
-			for (int i = 0; i < N; i++){
-				
-				string meme;
-				infile >> meme;
-				if (meme.substr(0, 1) == "i"){
-					stringstream ss;
-					ss << meme.substr(1);
-					int val;
-					ss >> val;
-					stack.push(val);
-				}
-				else{
-					stack.pop();
-				}	
-				
-			}
-			for (int i = 0; i < stack.getN(); i++){
-				outfile << stack.stampa() << " ";
-			}
-		}
-		
-		if (s == "double"){
-				
-				Stack <double> stack;
-				
-			for (int i = 0; i < N; i++){
-				
-				string meme;
-				infile >> meme;
-				if (meme.substr(0, 1) == "i"){
-					stringstream ss;
-					ss << meme.substr(1);
-					double val;
-					ss >> val;
-					stack.push(val);
-				}
-				else{
-					stack.pop();
-				}	
-				
-			}
-			for (int i = 0; i < stack.getN(); i++){
-				outfile << stack.stampa() << " ";
-			}
-		}
-		
-		if (s == "bool"){
-				
-				Stack <bool> stack;
-				
-			for (int i = 0; i < N; i++){
-				
-				string meme;
-				infile >> meme;
-				if (meme.substr(0, 1) == "i"){
-					stringstream ss;
-					ss << meme.substr(1);
-					bool val;
-					ss >> val;
-					stack.push(val);
-				}
-				else{
-					stack.pop();
-				}	
-				
-			}
-			for (int i = 0; i < stack.getN(); i++){
-				outfile << stack.stampa() << " ";
-			}
-		}
-		if (s == "char"){
-				
-				Stack <char> stack;
-				
-			for (int i = 0; i < N; i++){
-				
-				string meme;
-				infile >> meme;
-				if (meme.substr(0, 1) == "i"){
-					stringstream ss;
-					ss << meme.substr(1);
-					char val;
-					ss >> val;
-					stack.push(val);
-				}
-				else{
-					stack.pop();
-				}	
-				
-			}
-			for (int i = 0; i < stack.getN(); i++){
-				outfile << stack.stampa() << " ";
-			}
-		}
-		outfile << endl;
-	}
 	
-
-return 0;	
+	for(int i=0; i<100; i++){
+		string type;
+		int N;
+		infile >> type >> N;
+		if (type == "double" || type=="bool" || type=="int"){
+			Stack <double> stack;
+			for(int j=0; j<N; j++){
+				char ini;
+				infile >> ini;
+				if(ini == 'i'){
+					double ele;
+					infile >> ele;
+					stack.push(ele);
+				}
+				if(ini == 'p'){
+					infile >> ini >> ini;
+					stack.pop();
+				}
+			}
+			stack.stampa(outfile);
+		}
+		
+		if (type == "char"){
+			Stack <char> stack;
+			for(int j=0; j<N; j++){
+				char ini;
+				infile >> ini;
+				if(ini == 'i'){
+					char ele;
+					infile >> ele;
+					stack.push(ele);
+				}
+				if(ini == 'p'){
+					infile >> ini >> ini;
+					stack.pop();
+				}
+			}
+			stack.stampa(outfile);
+		}	
+	outfile << endl;
+	}
+	return 0;
 }
