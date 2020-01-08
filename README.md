@@ -1,2 +1,2 @@
-# Programming - PROG2
+# Programming - Prog2
 Raccolta di esercizi di Programmazione 2.
