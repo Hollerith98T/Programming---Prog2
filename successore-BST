@@ -1,0 +1,193 @@
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+template <class T> class Node{
+	private:
+		T key;
+		Node <T> *left, *right, *parent;
+	
+	public:
+		Node(T key){
+			this->key=key;
+			left = right = parent = NULL;
+		}
+		void setKey(T key){
+			this->key=key;
+		}
+		void setLeft(Node <T> *left){
+			this->left=left;
+		}
+		void setRight(Node <T> *right){
+			this->right=right;
+		}
+		void setParent(Node <T> *parent){
+			this->parent=parent;
+		}
+		T getKey(){
+			return key;
+		}
+		Node <T> *getLeft(){
+			return left;
+		}
+		Node <T> *getRight(){
+			return right;
+		}
+		Node <T> *getParent(){
+			return parent;
+		}
+};
+
+template <class T> class BST{
+	private:
+		Node <T> *root;
+		int N;
+		
+		Node <T> *_search(T x, Node <T> *y){
+			if(!y) return NULL;
+			if(x == y->getKey()) return y;
+			if(x < y->getKey()) return _search(x, y->getLeft());
+			return _search(x, y->getRight());
+		}
+		
+		Node <T> *_succ(Node <T> *y){
+			if(y->getRight()){
+				y = _min(y->getRight());
+				return y;
+			}
+			else{
+				T x = y->getKey();
+				do y = y->getParent();
+				while (y && x > y->getKey());
+				if(y){
+					return y;
+				}
+				return NULL;
+			}
+		}
+		
+		Node <T> *_min(Node <T> *y){
+			if(!y || !y->getLeft()) return y;
+			return _min(y->getLeft());
+		}
+		
+		void _canc(Node <T> *y, T x){
+			Node <T> *tmp = _search(x, y);
+			if(tmp->getLeft() && tmp->getRight()){
+				Node <T> *s = _succ(tmp);
+				tmp->setKey(s->getKey());
+				_canc(s, s->getKey());
+			}
+			else{
+				Node <T> *p = tmp->getParent();
+				Node <T> *child = tmp->getLeft();
+				if(!child) child = tmp->getRight();
+				if(p){
+					if(x < p->getKey()){
+						p->setLeft(child);
+					}
+					else{
+						p->setRight(child);
+					}
+				}
+				else{
+					root = child;
+				}
+				if (child){
+					child->setParent(p);
+				}
+				N--;
+			}
+		}
+		
+	public:
+		BST(){
+			root = NULL;
+			N = 0;
+		}
+		
+		void insert(T key){
+			Node <T> *newnode = new Node <T>(key);
+			Node <T> *tmp = root;
+			Node <T> *p = NULL;
+			while(tmp){
+				p = tmp;
+				if (key <= tmp->getKey()){
+					tmp = tmp->getLeft();
+				}
+				else{
+					tmp = tmp->getRight();
+				}
+			}
+			if (p){
+				if(key <= p->getKey()){
+					p->setLeft(newnode);
+				}
+				else{
+					p->setRight(newnode);
+				}
+			}
+			else{
+				root = newnode;
+			}
+			newnode->setParent(p);
+			N++;
+		}
+		
+		void  canc(T x){
+			_canc(root, x);
+		}
+		
+		void succ(T x, ostream &os){
+			Node <T> *tmp = _search(x, root);
+			tmp = _succ(tmp);
+			if(tmp){
+				os << tmp->getKey() << " ";
+			}
+			else{
+				os << "-1" << " ";
+			}
+
+		}
+};
+
+int main(){
+	
+	fstream infile, outfile;
+	infile.open("input.txt", ios::in);
+	outfile.open("output.txt", ios::out);
+	
+	for(int task=0; task<100; task++){
+		string type;
+		int N, M;
+		infile >> type >> N >> M;
+		
+		if (type=="int" || type=="double"){
+			BST <double> bst;
+			for(int i=0; i<N; i++){
+				char c;
+				infile >> c;
+				if(c == 'i'){
+					infile >> c >> c >> c;
+					double ele;
+					infile >> ele;
+					bst.insert(ele);
+				}
+				else{
+					infile >> c >> c >> c >> c;
+					double ele;
+					infile >> ele;
+					bst.canc(ele);
+				}	
+			}
+			for(int i=0; i<M; i++){
+				double ele;
+				infile >> ele;
+				bst.succ(ele, outfile);
+			}
+			outfile << endl;
+		}
+	}
+	return 0;
+}
