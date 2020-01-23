@@ -103,7 +103,7 @@ template <class T> class BST{
 			}
 		}
 		
-		int _CA(Node <T> *ancestor, T x, T y){
+		double _CA(Node <T> *ancestor, T x, T y){
 			if (x < ancestor->getKey() && y < ancestor->getKey()) return _CA(ancestor->getLeft(), x, y);
 			if (x > ancestor->getKey() && y > ancestor->getKey()) return _CA(ancestor->getRight(), x, y);
 			return ancestor->getKey();
@@ -142,7 +142,7 @@ template <class T> class BST{
 			N++;
 		}
 		
-		int CA(T x, T y){
+		double CA(T x, T y){
 			return _CA(root, x, y);	
 		}
 		
