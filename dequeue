@@ -1,0 +1,110 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+template <class T> class Node{
+	private:
+		T key;
+		Node <T> *next;
+	public:
+		Node(T key){
+			this->key=key;
+			next = NULL;
+		}
+		void setKey(T key){
+			this->key=key;
+		}
+		void setNext(Node <T> *next){
+			this->next=next;
+		}
+		T getKey(){
+			return key;
+		}
+		Node <T> *getNext(){
+			return next;
+		}
+};
+
+template <class T> class Queue{
+	private:
+		Node <T> *inizio, *fine;
+		int N;
+	public:
+		Queue(){
+			inizio = fine = NULL;
+			N = 0;
+		}
+		void enqueue(T key){
+			Node <T> *newnode = new Node <T>(key);
+			if (!inizio){
+				inizio = fine = newnode;
+			}
+			else{
+				fine->setNext(newnode);
+				fine = newnode;
+			}
+			N++;
+		}
+		
+		void dequeue(){
+			inizio=inizio->getNext();
+			N--;
+		}
+		
+		void stampa(ostream &os){
+			for(int i=0; i<N; i++){
+				os << inizio->getKey() << " ";
+				inizio = inizio->getNext();
+			}
+		}
+
+};
+
+int main(){
+	
+	fstream infile, outfile;
+	infile.open("input.txt", ios::in);
+	outfile.open("output.txt", ios::out);
+	
+	for(int task=0; task<100; task++){
+		string type;
+		int N;
+		infile >> type >> N;
+		if (type=="char"){
+			Queue <char> queue;
+			for(int i=0; i<N; i++){
+				char c;
+				infile >> c;
+				if (c == 'i'){
+					char ele;
+					infile >> ele;
+					queue.enqueue(ele);
+				}
+				else{
+					infile >> c >> c >> c >> c >> c >> c;
+					queue.dequeue();
+				}
+			}
+		queue.stampa(outfile);
+		}
+		else{
+			Queue <double> queue;
+			for (int i=0; i<N; i++){
+			char c;
+			infile >> c;
+			if (c == 'i'){
+				double ele;
+				infile >> ele;
+				queue.enqueue(ele);
+			}
+			else{
+				infile >> c >> c >> c >> c >> c >> c;
+				queue.dequeue();
+			}
+		}
+		queue.stampa(outfile);
+		}
+		outfile << endl;
+	}
+	return 0;
+}
