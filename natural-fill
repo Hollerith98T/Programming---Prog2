@@ -43,62 +43,6 @@ template <class T> class BST{
 		Node <T> *root;
 		int N;
 		
-		Node <T> *_search(T x, Node <T> *y){
-			if (!y) return y;
-			if (x == y->getKey())return y;
-			if (x < y->getLeft()) return _search(x, y->getLeft());
-			return _search(x, y->getRight());
-		}
-		
-		Node <T> *_succ(Node <T> *y){
-			if (y->getRight()){
-				y = _min(y->getRight());
-				return y;
-			}
-			else{
-				T x = y->getKey();
-				do y = y->getParent();
-				while (y && x > y->getKey());
-				if (y){
-					return y;
-				}
-				return NULL;
-			}
-		}
-		
-		Node <T>_min(Node <T> *y){
-			if (!y || !y->getLeft()) return y;
-			return _min(y->getLeft());
-		}
-		
-		void _canc(Node <T> *y, T x){
-			Node <T> *tmp = _search(x, y);
-			if (tmp){
-				Node <T> *s = _succ(tmp);
-				tmp->setKey(s->getKey());
-				_canc(s, s->getKey());
-			}
-			else{
-				Node <T> *child = tmp->getLeft();
-				if (!child) child = tmp->getRight();
-				Node <T> *p = tmp->getParent();
-				if(p){
-					if(x < p->getKey()){
-						p->setLeft(child);
-					}
-					else{
-						p->setRight(child);
-					}
-				}
-				else{
-					root = child;
-				}
-				if(child){
-					child->setParent(p);
-				}
-				N--;
-			}
-		}
 		
 		void _nat(Node <T> *y, T *array, int n, int &i){
 			if(y){
