@@ -1,0 +1,124 @@
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+template <class T> class Graph{
+
+	private:
+		T *array;
+		int n, e;
+		int **matrice;
+		int len;
+		
+		int findIndex(T x){
+			for (int i = 0; i < n; i++){
+				if (array[i] == x){
+					return i;
+				}
+			}
+			return -1;
+		}
+	public:
+		Graph(int len = 100){
+			this->len = len;
+			n = e = 0;
+			array = new T[len];
+			matrice = new int*[len];
+			for (int i = 0; i < len; i++){
+				matrice[i] = new int[len];
+				for (int j = 0; j < len; j++){
+					matrice[i][j] = 0;
+				}
+			}
+		}
+		
+		void addNode(T x){
+			array[n] = x;
+			n++;
+		}
+		
+		void addEdge(T x, T y){
+			int i = findIndex(x);
+			int j = findIndex(y);
+			if (matrice[i][j] == 0){
+				matrice[i][j] = 1;
+				e++;
+			}
+		}
+		
+		void selectionSort(){
+			for (int i = 0; i < n-1; i++){
+				int i_min = i;
+				for (int j = i+1; j < n; j++){
+					if (array[j] < array[i_min]){
+						i_min = j;
+					}
+				}
+				T tmp = array[i_min];
+				array[i_min] = array[i];
+				array[i] = tmp;
+			}
+		}
+		
+		void stampa(ostream &os){		
+			for (int i = 0; i < n; i++){
+				os << "(" << array[i];
+				for (int j = 0; j < n; j++){
+					if (matrice[i][j] == 1)
+						os << " " << array[j];
+				}
+				os << ")" << " ";
+			}
+		}
+
+};
+
+int main(){
+	
+	fstream infile, outfile;
+	infile.open("input.txt", ios::in);
+	outfile.open("output.txt", ios::out);
+	
+	for (int task = 0; task < 100; task++){
+		
+		int n, e;
+		string type;
+		infile >> n >> e >> type;
+		if (type == "int" || type == "double"){
+			Graph <double> grafo;
+			for (int i = 0; i < n; i++){
+				double x;
+				infile >> x;
+				grafo.addNode(x);
+			}
+			grafo.selectionSort();
+			for (int i = 0; i < e; i++){
+				double x, y;
+				char c;
+				infile >> c >> x >> y >> c;
+				grafo.addEdge(x, y);
+			}
+			grafo.stampa(outfile);
+		}
+		if (type == "char"){
+			Graph <char> grafo;
+			for (int i = 0; i < n; i++){
+				char x;
+				infile >> x;
+				grafo.addNode(x);
+			}
+			grafo.selectionSort();
+			for (int i = 0; i < e; i++){
+				char x, y;
+				char c;
+				infile >> c >> x >> y >> c;
+				grafo.addEdge(x, y);
+			}
+			grafo.stampa(outfile);
+		}
+		outfile << endl;
+	}
+	
+return 0;	
+}
