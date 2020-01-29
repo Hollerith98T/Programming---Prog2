@@ -1,0 +1,44 @@
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int sum = 0;
+
+void merge(int a[], int start, int mid, int end){
+	sum += a[start];
+	
+}
+
+void mergeSort(int a[], int N, int start, int end){
+	
+	if (start < end){
+		int mid = (start+end)/2;
+		mergeSort(a, N, start, mid);
+		mergeSort(a, N, mid+1, end);
+		merge(a, start, mid, end);
+	}
+	
+}
+
+int main(){
+	
+	fstream infile, outfile;
+	infile.open("input.txt", ios::in);
+	outfile.open("output.txt", ios::out);
+	
+	for (int task = 0; task < 100; task++){
+		
+		int N;
+		infile >> N;
+		int array[N];
+		for (int i = 0; i < N; i++){
+			infile >> array[i];
+		}
+		mergeSort(array, N, 0, N-1);
+		outfile << sum << endl;
+		sum = 0;
+	}
+	
+return 0;	
+}
